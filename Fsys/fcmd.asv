@@ -1,0 +1,7 @@
+function fcmd()
+
+
+end
+
+fcmdList={'\x05\x01' '\x05\x02' '\x06\x01' '\x06\x02' '\x01\x05\x04\x05' '\x04\x05' '\x01\x01\x04\x01' '\x01\x02\x04\x02' '\x01\x03\x04\x03' '\x01\x04\x04\x04' '\x03'}
+fcmdListN={'-0.1mm offset' '+0.1mm offset' 'Power on' 'Power off'  'Load' 'OnOff CH' 'CH1' 'CH2' 'CH3' 'CH4' 'make zero'}
