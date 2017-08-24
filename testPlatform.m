@@ -24,8 +24,16 @@ classdef testPlatform
             fclose(tp.Port);
         end
 
+        function offset_n(obj)
+            fprintf(obj.Port,[char(5),char(1)],'async');
+        end
+
+        function offset_p(obj)
+            fprintf(obj.Port,[char(5),char(2)],'async');
+        end
+
         function makeZero(obj)
-            fprintf(obj.Port,[char(3)],'async');
+            fprintf(obj.Port,char(3),'async');
             pause(0.1);
         end
 
