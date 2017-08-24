@@ -34,25 +34,25 @@ classdef testPlatform
             switch filterstatus
             case 0
                 fprintf(obj.Port,[char(2),char(0)],'async');
-                break;
+                return;
             case 1
                 fprintf(obj.Port,[char(2),char(1)],'async');
-                break;
+                return;
             case 2
                 fprintf(obj.Port,[char(2),char(2)],'async');
-                break;
+                return;
             case 3
                 fprintf(obj.Port,[char(2),char(4)],'async');
-                break;
+                return;
             case 4
                 fprintf(obj.Port,[char(2),char(5)],'async');
-                break;
+                return;
             case 5
                 fprintf(obj.Port,[char(2),char(6)],'async');
-                break;
+                return;
             case 6
                 fprintf(obj.Port,[char(2),char(7)],'async');
-                break;
+                return;
             end
             pause(1.5)
         end
