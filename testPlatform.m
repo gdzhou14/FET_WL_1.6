@@ -5,7 +5,7 @@ classdef testPlatform
     end
 
     methods
-        function testPlatform(obj,port)
+        function obj = testPlatform(port)
             obj.PortNum = port;
         end
     end
