@@ -7,9 +7,8 @@ classdef testPlatform
     methods
         function tp = testPlatform(port)
             tp.PortNum = port;
-            tp.Port = serial(tp.PortNum)
-            set(tp.Port,'BaudRate', 115200,'DataBits',8,'StopBits',1,'Parity','none','FlowControl','none')
-            
+            tp.Port = serial(tp.PortNum);
+            set(tp.Port,'BaudRate', 115200,'DataBits',8,'StopBits',1,'Parity','none','FlowControl','none');
             fopen(tp.Port);
             pause(0.1);
         end
@@ -18,10 +17,24 @@ classdef testPlatform
     methods
         function connect(obj)
             fprintf(obj.Port,[char(6),char(1)],'async');
+            pause(0.1);
+        end
+
+        function disconnect(obj)
+            fclose(pbj.Port);
         end
 
         function makeZero(obj)
             fprintf(obj.Port,char(3),'async');
+            pause(0.1);
+        end
+
+        function offset_n(obj)
+            fprintf(obj.Port,[char(5),char(1)],'async');
+        end
+
+        function offset_p(obj)
+            fprintf(obj.Port,[char(5),char(2)],'async');
         end
 
         function changeToChannel(obj,channel)
