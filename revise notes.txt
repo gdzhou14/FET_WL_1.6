@@ -1,0 +1,5 @@
+Is the "delay" of instrument equal to the "pause" of program?
+pulse_scan:
+Transfer: pause;
+Output: delay;
+please verify it!

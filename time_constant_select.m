@@ -1,0 +1,43 @@
+time_constant_num=get(Hc_time_constant,'Value');
+switch time_constant_num
+    case 1
+        fprintf(g_Lockin,'oflt 0');
+    case 2
+        fprintf(g_Lockin,'oflt 1');
+    case 3
+        fprintf(g_Lockin,'oflt 2');
+    case 4
+        fprintf(g_Lockin,'oflt 3');
+    case 5
+        fprintf(g_Lockin,'oflt 4');
+    case 6
+        fprintf(g_Lockin,'oflt 5');
+    case 7
+        fprintf(g_Lockin,'oflt 6');
+    case 8
+        fprintf(g_Lockin,'oflt 7');
+    case 9
+        fprintf(g_Lockin,'oflt 8');
+    case 10
+        fprintf(g_Lockin,'oflt 9');
+    case 11
+        fprintf(g_Lockin,'oflt 10');
+    case 12
+        fprintf(g_Lockin,'oflt 11');
+    case 13
+        fprintf(g_Lockin,'oflt 12');
+    case 14
+        fprintf(g_Lockin,'oflt 13');
+    case 15
+        fprintf(g_Lockin,'oflt 14');
+    case 16
+        fprintf(g_Lockin,'oflt 15');
+    case 17
+        fprintf(g_Lockin,'oflt 16');
+    case 18
+        fprintf(g_Lockin,'oflt 17');
+    case 19
+        fprintf(g_Lockin,'oflt 18');
+    case 20
+        fprintf(g_Lockin,'oflt 19');
+end

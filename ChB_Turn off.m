@@ -1,0 +1,1 @@
+fprintf(g_K2612A,'smua.source.output = smua.OUTPUT_OFF');
