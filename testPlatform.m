@@ -20,6 +20,10 @@ classdef testPlatform
             pause(0.1);
         end
 
+        function disconnect(obj)
+            fclose(tp.Port);
+        end
+
         function makeZero(obj)
             fprintf(obj.Port,[char(3)],'async');
             pause(0.1);
