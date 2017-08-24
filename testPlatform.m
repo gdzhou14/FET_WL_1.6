@@ -17,13 +17,10 @@ classdef testPlatform
 
     methods
         function connect(obj)
-            
-            
             fprintf(obj.Port,[char(6),char(1)],'async');
         end
 
         function makeZero(obj)
-            obj
             fprintf(obj.Port,char(3),'async');
         end
 
@@ -65,7 +62,6 @@ classdef testPlatform
                 pause(1.5);
                 return;
             end
-            
         end
     end
 
