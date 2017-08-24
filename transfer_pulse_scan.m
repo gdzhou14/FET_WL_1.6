@@ -44,14 +44,49 @@ if get(Hc_ChAcheck,'Value')==1&& get(Hc_ChBcheck,'Value')==1
  Axis_transfer_set;%调用坐标设置函数
  
  %起始电压扫描
+ fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
+ fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
  for kk=1:length(Vd)
+   for jj=1:V_pcycle
      fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+     fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg(1))]);
+     fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+     fprintf(g_K2612A,'READING = smua.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_d = fscanf(g_K2612A);
+     Id_cycle(1,jj)=str2double(current_string_d);
+     fprintf(g_K2612A,'READING = smub.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_g = fscanf(g_K2612A);
+     Ig_cycle(1,jj)=str2double(current_string_g);
+     pause(T_delay);
+     
+     fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+     fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg(1))]);
+     fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+     fprintf(g_K2612A,'READING = smua.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_d = fscanf(g_K2612A);
+     Id_cycle(1,jj)=str2double(current_string_d);
+     fprintf(g_K2612A,'READING = smub.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_g = fscanf(g_K2612A);
+     Ig_cycle(1,jj)=str2double(current_string_g);
+     
      fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
-     fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
-   for ii=1:length(Vg)
+     fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ;
+   end
+   Id(1)=sum(Id_cycle(1,V_pcycle))/V_pcycle;
+   Ig(1)=sum(Ig_cycle(1,V_pcycle))/V_pcycle;
+   for ii=2:length(Vg)
+      pause(0.01);
+      fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+      fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
+      fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
       for jj=1:V_pcycle
           fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg(ii))]);
-          pause(V_pwidth);
+          fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+          pause(0.01);
           fprintf(g_K2612A,'READING = smua.measure.i()');
           fprintf(g_K2612A, 'print(READING)');
           current_string = fscanf(g_K2612A);
@@ -61,21 +96,18 @@ if get(Hc_ChAcheck,'Value')==1&& get(Hc_ChBcheck,'Value')==1
           current_string_go = fscanf(g_K2612A);
           Ig_cycle(ii,jj)=str2double(current_string_go);
           fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
-          pause(V_pbias_time);
+          fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ;
       end
-     Id(ii)=sum(Id_cycle(ii,:))/V_pcycle;
-     Ig(ii)=sum(Ig_cycle(ii,:))/V_pcycle;
+     Id(ii)=sum(Id_cycle(ii,V_pcycle))/V_pcycle;
+     Ig(ii)=sum(Ig_cycle(ii,V_pcycle))/V_pcycle;
      
-     if ii>1
-         Axis_transfer_set;%调用坐标设置函数；
-
-         plot(Ha_Output,[Vg(ii-1) Vg(ii)],[Id(ii-1,1) Id(ii,1)],'-r*');
-         hold(Ha_Output,'on');
-
-         plot(Ha_Transfer,[Vg(ii-1) Vg(ii)],[Ig(ii-1,1) Ig(ii,1)],'-r*');
-         hold(Ha_Transfer,'on');
-     end
-     
+     Axis_transfer_set;%调用坐标设置函数；
+   
+     plot(Ha_Output,[Vg(ii-1) Vg(ii)],[Id(ii-1,1) Id(ii,1)],'-r*');
+     hold(Ha_Output,'on');
+    
+     plot(Ha_Transfer,[Vg(ii-1) Vg(ii)],[Ig(ii-1,1) Ig(ii,1)],'-r*');
+     hold(Ha_Transfer,'on');
    end
    Id_total(:,kk)=Id;
    Ig_total(:,kk)=Ig;
@@ -91,43 +123,72 @@ if value_mode==1
   set(Ha_Transfer,'XGrid','on');
   set(Ha_Transfer,'YGrid','on');
  elseif value_mode==2
-    for kk=1:length(Vd)
-          fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+  fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
+  fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
+for kk=1:length(Vd)
+   for jj=1:V_pcycle
+     fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+     fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg_reverse(1))]);
+     fprintf(g_K2612A,['delay( ',num2str(V_cdelay),' )']) ;
+     pause(0.5);
+     fprintf(g_K2612A,'READING = smua.measure.i()');
+     pause(T_delay);
+     fprintf(g_K2612A,'READING = smua.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_d = fscanf(g_K2612A);
+     Id_cycle(1,jj)=str2double(current_string_d);
+
+     fprintf(g_K2612A,'READING = smub.measure.i()');
+     pause(T_delay);
+     fprintf(g_K2612A,'READING = smub.measure.i()');
+     fprintf(g_K2612A, 'print(READING)');
+     current_string_g = fscanf(g_K2612A);
+     Ig_cycle(1,jj)=str2double(current_string_g);
+     fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
+     fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
+   end
+   Id_reverse(1)=sum(Id_cycle(1,V_pcycle))/V_pcycle;
+   Ig_reverse(1)=sum(Ig_cycle(1,V_pcycle))/V_pcycle;
+   for ii=2:length(Vg_reverse)
+      pause(0.01);
+      fprintf(g_K2612A,['smua.source.levelv =',num2str(Vd(kk))]);
+      fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
+      fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
+      for jj=1:V_pcycle
+          fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg_reverse(ii))]);
+          fprintf(g_K2612A,['delay( ',num2str(V_cdelay),' )']) ;
+          pause(0.01);
+          fprintf(g_K2612A,'READING = smua.measure.i()');
+          pause(T_delay);
+          fprintf(g_K2612A,'READING = smua.measure.i()');
+          fprintf(g_K2612A, 'print(READING)');
+          current_string = fscanf(g_K2612A);
+          Id_cycle(ii,jj)=str2double(current_string);
+          fprintf(g_K2612A,'READING = smub.measure.i()');
+          pause(T_delay);
+          fprintf(g_K2612A,'READING = smub.measure.i()');
+          fprintf(g_K2612A, 'print(READING)');
+          current_string_go = fscanf(g_K2612A);
+          Ig_cycle(ii,jj)=str2double(current_string_go);
           fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
           fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
-       for ii=1:length(Vg_reverse)
-          for jj=1:V_pcycle
-              fprintf(g_K2612A,['smub.source.levelv =',num2str(Vg_reverse(ii))]);
-              pause(V_pwidth);
-              fprintf(g_K2612A,'READING = smua.measure.i()');
-              fprintf(g_K2612A, 'print(READING)');
-              current_string = fscanf(g_K2612A);
-              Id_cycle(ii,jj)=str2double(current_string);
-              fprintf(g_K2612A,'READING = smub.measure.i()');
-              fprintf(g_K2612A, 'print(READING)');
-              current_string_go = fscanf(g_K2612A);
-              Ig_cycle(ii,jj)=str2double(current_string_go);
-              fprintf(g_K2612A,['smub.source.levelv =',num2str(V_pbias)]);
-              pause(V_pbias_time);
-          end
-         Id_reverse(ii)=sum(Id_cycle(ii,:))/V_pcycle;
-         Ig_reverse(ii)=sum(Ig_cycle(ii,:))/V_pcycle;
-
-         if ii>1
-             Axis_transfer_set;%调用坐标设置函数；
-
-             plot(Ha_Output,[Vg_reverse(ii-1) Vg_reverse(ii)],[Id_reverse(ii-1,1) Id_reverse(ii,1)],'-g*');
-             hold(Ha_Output,'on');
-
-             plot(Ha_Transfer,[Vg_reverse(ii-1) Vg_reverse(ii)],[Ig_reverse(ii-1,1) Ig_reverse(ii,1)],'-g*');
-             hold(Ha_Transfer,'on');
-         end
-       end
-       Id_total_reverse(:,kk)=Id_reverse;
-       Ig_total_reverse(:,kk)=Ig_reverse;
-    end
-    transfer_reverse_scan=[Vg_reverse' Id_total_reverse Ig_total_reverse];  
-    transfer_data=cat(1,transfer_forward_scan,transfer_reverse_scan);
+      end
+     Id_reverse(ii)=sum(Id_cycle(ii,V_pcycle))/V_pcycle;
+     Ig_reverse(ii)=sum(Ig_cycle(ii,V_pcycle))/V_pcycle;
+     
+     Axis_transfer_set;%调用坐标设置函数；
+   
+     plot(Ha_Output,[Vg_reverse(ii-1) Vg_reverse(ii)],[Id_reverse(ii-1,1) Id_reverse(ii,1)],'-g*');
+     hold(Ha_Output,'on');
+    
+     plot(Ha_Transfer,[Vg_reverse(ii-1) Vg_reverse(ii)],[Ig_reverse(ii-1,1) Ig_reverse(ii,1)],'-g*');
+     hold(Ha_Transfer,'on');
+   end
+   Id_total_reverse(:,kk)=Id_reverse;
+   Ig_total_reverse(:,kk)=Ig_reverse;
+end
+transfer_reverse_scan=[Vg_reverse' Id_total_reverse Ig_total_reverse];  
+transfer_data=cat(1,transfer_forward_scan,transfer_reverse_scan);
 end
 transfer_data_cell=num2cell(transfer_data);
 

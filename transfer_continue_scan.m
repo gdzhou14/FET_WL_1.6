@@ -28,8 +28,8 @@ V_cdelay=str2double(get(Hc_cdelay,'String'));%设置连续延时时间
 
 %初始化仪器
 if get(Hc_ChAcheck,'Value')==1&& get(Hc_ChBcheck,'Value')==1
- Initial_set;%调用初始化函数；
- Axis_transfer_set;%调用坐标设置函数；
+Initial_set;%调用初始化函数；
+Axis_transfer_set;%调用坐标设置函数；
  %开始扫描
  for kk=1:length(Vdt)
 fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdt(kk))]);
@@ -83,7 +83,7 @@ for ii=2:length(Vgt_forward)
     % plot(Ha_Output,[Vgt_forward(ii-1) Vgt_forward(ii)],[sqrt(abs(Idt_forward(ii-1,1))) sqrt(abs(Idt_forward(ii,1)))]);
     hold(Ha_Output,'on');
     
-    plot(Ha_Transfer,[Vgt_forward(ii-1) Vgt_forward(ii)],[log10(abs(Igt_forward(ii-1,1))) log10(abs(Igt_forward(ii,1)))],'g*-');
+    plot(Ha_Transfer,[Vgt_forward(ii-1) Vgt_forward(ii)],[Igt_forward(ii-1,1) Igt_forward(ii,1)],'g*-');
     hold(Ha_Transfer,'on');
 end
 transfer_forward(:,2*kk:2*kk+1)=[Idt_forward(:,kk) Igt_forward(:,kk)];
@@ -164,8 +164,8 @@ transfer_data_all=cat(1,xls_r2,transfer_data_cell);
 
 
 fprintf(g_K2612A,'smua.source.levelv =0');%将电源电压值重设为0V
-%fprintf(g_K2612A,'smua.source.output = smua.OUTPUT_OFF');%关闭输出
+fprintf(g_K2612A,'smua.source.output = smua.OUTPUT_OFF');%关闭输出
 fprintf(g_K2612A,'smub.source.levelv =0');%将电源电压值重设为0V
-%fprintf(g_K2612A,'smub.source.output = smub.OUTPUT_OFF');%关闭输出
+fprintf(g_K2612A,'smub.source.output = smub.OUTPUT_OFF');%关闭输出
 
 

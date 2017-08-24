@@ -2,8 +2,6 @@
  output_continue_scan;
  set(Hc_Csweepstatus,'ForegroundColor','r');
  elseif get(Hc_swp_select,'Value')==2
-      output_continue_scan;
-      set(Hc_Csweepstatus,'ForegroundColor','r');
-%  output_pulse_scan;
-%  set(Hc_Psweepstatus,'ForegroundColor','r');
+ output_pulse_scan;
+ set(Hc_Psweepstatus,'ForegroundColor','r');
  end 

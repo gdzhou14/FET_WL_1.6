@@ -46,17 +46,51 @@ if get(Hc_ChAcheck,'Value')==1&& get(Hc_ChBcheck,'Value')==1
  Axis_output_set;%调用坐标设置函数；
  
  %起始电压扫描
-
- 
-for kkk=1:length(Vgo)
  fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
  fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
  
-  for iii=1:length(Vdo)
+for kkk=1:length(Vgo)
+ for jj=1:V_pcycle
+   fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
+   fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdo(1))]);
+   fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+   fprintf(g_K2612A,'READING = smua.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_do = fscanf(g_K2612A);
+   Ido_cycle(1,jj)=str2double(current_string_do);
+   fprintf(g_K2612A,'READING = smub.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_go = fscanf(g_K2612A);
+   Igo_cycle(1,jj)=str2double(current_string_go);
+   
+   pause(T_delay);
+   
+   fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
+   fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdo(1))]);
+   fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+   fprintf(g_K2612A,'READING = smua.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_do = fscanf(g_K2612A);
+   Ido_cycle(1,jj)=str2double(current_string_do);
+   fprintf(g_K2612A,'READING = smub.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_go = fscanf(g_K2612A);
+   Igo_cycle(1,jj)=str2double(current_string_go);
+   
+   fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
+   fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
+ end
+ Ido(1)=sum(Ido_cycle(1,V_pcycle))/V_pcycle;
+ Igo(1)=sum(Igo_cycle(1,V_pcycle))/V_pcycle;
+  for iii=2:length(Vdo)
+    pause(0.01);
+    fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
+    fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
+    fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
       for jj=1:V_pcycle
        fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdo(iii))]);
-       fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
-       fprintf(g_K2612A,['delay( ',num2str(V_pwidth),' )']) ;
+       fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+       pause(0.01);
        fprintf(g_K2612A,'READING = smua.measure.i()');
        fprintf(g_K2612A, 'print(READING)');
        current_string = fscanf(g_K2612A);
@@ -65,23 +99,19 @@ for kkk=1:length(Vgo)
        fprintf(g_K2612A, 'print(READING)');
        current_string_go = fscanf(g_K2612A);
        Igo_cycle(iii,jj)=str2double(current_string_go);
-       
-       fprintf(g_K2612A,'smub.source.output =0');
        fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
-       fprintf(g_K2612A,['delay( ',num2str(V_pbias_time),' )']) ; 
+       fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
       end
-    Ido(iii)=sum(Ido_cycle(iii,:))/V_pcycle;
-    Igo(iii)=sum(Igo_cycle(iii,:))/V_pcycle;
+    Ido(iii)=sum(Ido_cycle(iii,V_pcycle))/V_pcycle;
+    Igo(iii)=sum(Igo_cycle(iii,V_pcycle))/V_pcycle;
+ 
+    Axis_output_set;%调用坐标设置函数；
+   
+    plot(Ha_Output,[Vdo(iii-1) Vdo(iii)],[Ido(iii-1,1) Ido(iii,1)],'-r*');
+    hold(Ha_Output,'on');
     
-    if iii>1
-        Axis_output_set;%调用坐标设置函数；
-
-        plot(Ha_Output,[Vdo(iii-1) Vdo(iii)],[Ido(iii-1,1) Ido(iii,1)],'-r*');
-        hold(Ha_Output,'on');
-
-        plot(Ha_Transfer,[Vdo(iii-1) Vdo(iii)],[Igo(iii-1,1) Igo(iii,1)],'-r*');
-        hold(Ha_Transfer,'on');
-    end
+    plot(Ha_Transfer,[Vdo(iii-1) Vdo(iii)],[Igo(iii-1,1) Igo(iii,1)],'-r*');
+    hold(Ha_Transfer,'on');
   end
  Ido_total(:,kkk)=Ido;
  Igo_total(:,kkk)=Igo;
@@ -100,38 +130,60 @@ elseif value_mode==2
  fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
  
  for kkk=1:length(Vgo)
- fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
- fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
-  for iii=1:length(Vdo_reverse)
+  for jj=1:V_pcycle
+   fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
+   fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdo_reverse(1))]);
+   fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+   fprintf(g_K2612A,'READING = smua.measure.i()');
+   pause(T_delay);
+   fprintf(g_K2612A,'READING = smua.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_do = fscanf(g_K2612A);
+   Ido_cycle(1,jj)=str2double(current_string_do);
+
+   fprintf(g_K2612A,'READING = smub.measure.i()');
+   pause(T_delay);
+   fprintf(g_K2612A,'READING = smub.measure.i()');
+   fprintf(g_K2612A, 'print(READING)');
+   current_string_go = fscanf(g_K2612A);
+   Igo_cycle(1,jj)=str2double(current_string_go);
+  end
+ Ido_revease(1)=sum(Ido_cycle(1,V_pcycle))/V_pcycle;
+ Igo_reverse(1)=sum(Igo_cycle(1,V_pcycle))/V_pcycle;
+  for iii=2:length(Vdo_reverse)
+    pause(0.01);
+    fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
+    fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
+    fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
       for jj=1:V_pcycle
+       
        fprintf(g_K2612A,['smua.source.levelv =',num2str(Vdo_reverse(iii))]);
-       fprintf(g_K2612A,['smub.source.levelv =',num2str(Vgo(kkk))]);
-       fprintf(g_K2612A,['delay( ',num2str(V_pwidth),' )']) ;
+       fprintf(g_K2612A,['delay( ',num2str(T_delay),' )']) ;
+       pause(0.01);
+       fprintf(g_K2612A,'READING = smua.measure.i()');
        fprintf(g_K2612A,'READING = smua.measure.i()');
        fprintf(g_K2612A, 'print(READING)');
        current_string = fscanf(g_K2612A);
        Ido_cycle(iii,jj)=str2double(current_string);
        fprintf(g_K2612A,'READING = smub.measure.i()');
+       pause(T_delay);
+       fprintf(g_K2612A,'READING = smub.measure.i()');
        fprintf(g_K2612A, 'print(READING)');
        current_string_go = fscanf(g_K2612A);
        Igo_cycle(iii,jj)=str2double(current_string_go);
-       
-       fprintf(g_K2612A,'smub.source.output =0');
        fprintf(g_K2612A,['smua.source.levelv =',num2str(V_pbias)]);
-       fprintf(g_K2612A,['delay( ',num2str(V_pbias_time),' )']) ; 
+       fprintf(g_K2612A,['delay( ',num2str(V_pdelay),' )']) ; 
       end
-    Ido_reverse(iii)=sum(Ido_cycle(iii,:))/V_pcycle;
-    Igo_reverse(iii)=sum(Igo_cycle(iii,:))/V_pcycle;
+    Ido_reverse(iii)=sum(Ido_cycle(iii,V_pcycle))/V_pcycle;
+    Igo_reverse(iii)=sum(Igo_cycle(iii,V_pcycle))/V_pcycle;
     
-    if iii>1
-        Axis_output_set;%调用坐标设置函数;
-
-        plot(Ha_Output,[Vdo_reverse(iii-1) Vdo_reverse(iii)],[Ido_reverse(iii-1,1) Ido_reverse(iii,1)],'-g*');
-        hold(Ha_Output,'on');
-
-        plot(Ha_Transfer,[Vdo_reverse(iii-1) Vdo_reverse(iii)],[Igo_reverse(iii-1,1) Igo_reverse(iii,1)],'-g*');
-        hold(Ha_Transfer,'on');
-    end
+    Axis_output_set;%调用坐标设置函数;
+   
+    plot(Ha_Output,[Vdo_reverse(iii-1) Vdo_reverse(iii)],[Ido_reverse(iii-1,1) Ido_reverse(iii,1)],'-g*');
+    hold(Ha_Output,'on');
+    
+    plot(Ha_Transfer,[Vdo_reverse(iii-1) Vdo_reverse(iii)],[Igo_reverse(iii-1,1) Igo_reverse(iii,1)],'-g*');
+    hold(Ha_Transfer,'on');
   end
  Ido_total_reverse(:,kkk)=Ido_reverse;
  Igo_total_reverse(:,kkk)=Igo_reverse;
